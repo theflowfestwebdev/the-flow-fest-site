@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Acumin Pro Light";
+  src: url("/fonts/acumin-pro/fonnts.com-AcuminPro-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Stolzl Book";
+  src: url("/fonts/stolzl/stolzl-book.otf");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Stolzl Light";
+  src: url("/fonts/stolzl/stolzl-light.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "TheSeasons-Regular";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-reg.woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheSeasons-Light";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-lt.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheSeasons-LightItalic";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-ltit.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: italic;
+}
+@font-face {
+  font-family: "TheSeasons-Italic";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-it.otf")
+    format("opentype");
+  font-weight: normal;
+  font-style: italic;
+}
+@font-face {
+  font-family: "TheSeasons-Bold";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-bd.otf")
+    format("opentype");
+  font-weight: bold;
+  font-style: normal;
+}
+@font-face {
+  font-family: "TheSeasons-BoldItalic";
+  src: url("/fonts/the-seasons/Fontspring-DEMO-theseasons-bdit.otf")
+    format("opentype");
+  font-weight: bold;
+  font-style: italic;
+}
+
+body {
+  font-family: "Acumin Pro Light", sans-serif;
+  /* overflow-x: hidden; */
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 20 14.3% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 20 14.3% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 20 14.3% 4.1%;
+    --primary: 30 22% 64%;
+    --primary-foreground: 60 9.1% 97.8%;
+    --secondary: 60 4.8% 95.9%;
+    --secondary-foreground: 24 9.8% 10%;
+    --muted: 60 4.8% 95.9%;
+    --muted-foreground: 25 5.3% 44.7%;
+    --accent: 60 4.8% 95.9%;
+    --accent-foreground: 24 9.8% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 60 9.1% 97.8%;
+    --border: 20 5.9% 90%;
+    --input: 20 5.9% 90%;
+    --ring: 20 14.3% 4.1%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer components {
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scroll-animate.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .scroll-animate img {
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .scroll-animate.animate-in img {
+    transform: scale(1.03);
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    font-family: "Acumin Pro Light", sans-serif;
+    font-feature-settings:
+      "rlig" 1,
+      "calt" 1;
+    @apply bg-background text-foreground;
+  }
+}
