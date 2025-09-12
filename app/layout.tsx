@@ -1,5 +1,6 @@
-import Head from "next/head";
 import type {Metadata} from "next";
+import {GoogleAnalytics} from "@next/third-parties/google";
+
 import "./globals.css";
 
 import NavBar from "@/components/NavBar";
@@ -22,25 +23,12 @@ export default function RootLayout({
   return (
     <>
       <NavBar />
-      <Head>
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-6MMECMWWSM"
-        ></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-6MMECMWWSM');
-          `,
-          }}
-        />
-      </Head>
 
       <html lang="en">
-        <body>{children}</body>
+        <body>
+          {children}
+          <GoogleAnalytics gaId="G-6MMECMWWSM" />
+        </body>
       </html>
       <Footer />
     </>
