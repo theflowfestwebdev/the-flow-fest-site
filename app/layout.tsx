@@ -14,8 +14,6 @@ export const metadata: Metadata = {
   },
 };
 
-declare var dataLayer: any;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -29,11 +27,16 @@ export default function RootLayout({
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-6MMECMWWSM"
         ></script>
-        <script>
-          window.dataLayer = window.dataLayer || []; function gtag()
-          {dataLayer.push(arguments)}
-          gtag('js', new Date()); gtag('config', 'G-6MMECMWWSM');
-        </script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-6MMECMWWSM');
+          `,
+          }}
+        />
       </Head>
 
       <html lang="en">
