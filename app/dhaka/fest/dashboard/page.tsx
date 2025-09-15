@@ -18,6 +18,7 @@ import {Button} from "@/components/ui/button";
 import StolzlThinButton from "@/components/ui/StolzlThinButton";
 import ZoneScheduleCarousel from "./components/ActivityGrid";
 import CoachesDirectory from "./components/CoachesDirectory";
+import SponsorsDirectory from "./components/SponsorsDirectory";
 
 const festivalData = {
   title: "The Flow Fest 2025",
@@ -305,12 +306,12 @@ const sponsors = [
 
 export default function FlowFestPage() {
   const [selectedView, setSelectedView] = useState<
-    "schedule" | "map" | "partners" | "coaches"
+    "schedule" | "map" | "sponsors" | "coaches"
   >("schedule");
   const [scheduleView, setScheduleView] = useState<"list" | "grid">("list");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
-  const [showVendorDirectory, setShowVendorDirectory] = useState(false);
+  const [showVendorDirectory, setShowVendorDirectory] = useState(true);
   const [registeredSessions, setRegisteredSessions] = useState<number[]>([]);
   const [selectedSession, setSelectedSession] = useState<any>(null);
   const [popupPosition, setPopupPosition] = useState({x: 0, y: 0});
@@ -430,185 +431,6 @@ export default function FlowFestPage() {
   const isRegistered = (sessionId: number) =>
     registeredSessions.includes(sessionId);
 
-  // const CalendarDayView = () => {
-  //   return (
-  //     <div className="bg-white rounded-lg shadow-lg border border-stone-200 max-w-4xl mx-auto px-2 sm:px-4">
-  //       <div className="min-w-[1024px] w-full overflow-x-auto">
-  //         {/* Calendar Header */}
-  //         <div className="grid grid-cols-4 gap-0.5 mb-0.5">
-  //           <div className="h-12 bg-gradient-to-br from-stone-50 to-stone-100 border-b border-r border-stone-200"></div>
-  //           <div className="h-12 bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center text-xs sm:text-sm font-medium text-stone-800 border-b border-stone-200 shadow-sm">
-  //             <div className="text-center">
-  //               <div className="font-light text-[10px] sm:text-xs text-stone-600">
-  //                 THURSDAY
-  //               </div>
-  //               <div className="text-[11px] sm:text-sm">Nov 6</div>
-  //             </div>
-  //           </div>
-  //           <div className="h-12 bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center text-xs sm:text-sm font-medium text-stone-800 border-b border-stone-200 shadow-sm">
-  //             <div className="text-center">
-  //               <div className="font-light text-[10px] sm:text-xs text-stone-600">
-  //                 FRIDAY
-  //               </div>
-  //               <div className="text-[11px] sm:text-sm">Nov 7</div>
-  //             </div>
-  //           </div>
-  //           <div className="h-12 bg-gradient-to-br from-stone-100 to-stone-200 flex items-center justify-center text-xs sm:text-sm font-medium text-stone-800 border-b border-stone-200 shadow-sm">
-  //             <div className="text-center">
-  //               <div className="font-light text-[10px] sm:text-xs text-stone-600">
-  //                 SATURDAY
-  //               </div>
-  //               <div className="text-[11px] sm:text-sm">Nov 8</div>
-  //             </div>
-  //           </div>
-  //         </div>
-
-  //         {/* Time Slots */}
-  //         {Array.from({length: 10}, (_, i) => i + 10).map((hour, index) => (
-  //           <div key={hour} className="grid grid-cols-4 gap-0.5 mb-0.5">
-  //             {/* Time Label */}
-  //             <div
-  //               className={`h-16 flex items-center justify-center text-[10px] sm:text-xs font-medium text-stone-700 border-r border-stone-200 ${
-  //                 index % 2 === 0 ? "bg-stone-50" : "bg-white"
-  //               }`}
-  //             >
-  //               <div className="text-center">
-  //                 <div className="text-sm font-light">
-  //                   {hour === 12
-  //                     ? "12"
-  //                     : hour > 12
-  //                       ? `${hour - 12}`
-  //                       : `${hour}`}
-  //                 </div>
-  //                 <div className="text-xs text-stone-500 font-light">
-  //                   {hour >= 12 ? "PM" : "AM"}
-  //                 </div>
-  //               </div>
-  //             </div>
-
-  //             {/* Thursday Column */}
-  //             <div
-  //               className={`h-16 relative ${index % 2 === 0 ? "bg-stone-25" : "bg-white"} border-r border-stone-200`}
-  //             >
-  //               {filteredSessions
-  //                 .filter(
-  //                   session =>
-  //                     session.date === "November 6" &&
-  //                     parseInt(session.startTime.split(":")[0]) === hour
-  //                 )
-  //                 .map(session => (
-  //                   <div
-  //                     key={session.id}
-  //                     className={`relative  q88[=] z-20 right-1 p-2 text-xs cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
-  //                       isRegistered(session.id)
-  //                         ? "bg-gradient-to-br from-green-50 to-green-100 border-green-300 shadow-sm"
-  //                         : "bg-gradient-to-br from-stone-50 to-stone-100 border-stone-300 shadow-sm"
-  //                     } border rounded-lg backdrop-blur-sm`}
-  //                     style={
-  //                       {
-  //                         // top: `${(parseInt(session.startTime.split(":")[1]) / 60) * 100}%`,
-  //                         // height: `${((parseInt(session.endTime.split(":")[0]) * 60 + parseInt(session.endTime.split(":")[1]) - (parseInt(session.startTime.split(":")[0]) * 60 + parseInt(session.startTime.split(":")[1]))) / 60) * 100}%`,
-  //                       }
-  //                     }
-  //                     onClick={e => handleSessionClick(session, e)}
-  //                   >
-  //                     <div className="font-semibold text-stone-800 truncate">
-  //                       {session.title}
-  //                     </div>
-  //                     <div className="text-stone-600 truncate text-xs">
-  //                       {session.coach}
-  //                     </div>
-  //                     {isRegistered(session.id) && (
-  //                       <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full"></div>
-  //                     )}
-  //                   </div>
-  //                 ))}
-  //             </div>
-
-  //             {/* Friday Column */}
-  //             <div
-  //               className={`h-16 relative ${index % 2 === 0 ? "bg-stone-25" : "bg-white"} border-r border-stone-200`}
-  //             >
-  //               {filteredSessions
-  //                 .filter(
-  //                   session =>
-  //                     session.date === "November 7" &&
-  //                     parseInt(session.startTime.split(":")[0]) === hour
-  //                 )
-  //                 .map(session => (
-  //                   <div
-  //                     key={session.id}
-  //                     className={`absolute left-1 right-1 p-2 text-xs cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
-  //                       isRegistered(session.id)
-  //                         ? "bg-gradient-to-br from-green-50 to-green-100 border-green-300 shadow-sm"
-  //                         : "bg-gradient-to-br from-stone-50 to-stone-100 border-stone-300 shadow-sm"
-  //                     } border rounded-lg backdrop-blur-sm`}
-  //                     style={
-  //                       {
-  //                         // top: `${(parseInt(session.startTime.split(":")[1]) / 60) * 100}%`,
-  //                         // height: `${((parseInt(session.endTime.split(":")[0]) * 60 + parseInt(session.endTime.split(":")[1]) - (parseInt(session.startTime.split(":")[0]) * 60 + parseInt(session.startTime.split(":")[1]))) / 60) * 100}%`,
-  //                       }
-  //                     }
-  //                     onClick={e => handleSessionClick(session, e)}
-  //                   >
-  //                     <div className="font-semibold text-stone-800 truncate">
-  //                       {session.title}
-  //                     </div>
-  //                     <div className="text-stone-600 truncate text-xs">
-  //                       {session.coach}
-  //                     </div>
-  //                     {isRegistered(session.id) && (
-  //                       <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full"></div>
-  //                     )}
-  //                   </div>
-  //                 ))}
-  //             </div>
-
-  //             {/* Saturday Column */}
-  //             <div
-  //               className={`h-16 relative ${index % 2 === 0 ? "bg-stone-25" : "bg-white"}`}
-  //             >
-  //               {filteredSessions
-  //                 .filter(
-  //                   session =>
-  //                     session.date === "November 8" &&
-  //                     parseInt(session.startTime.split(":")[0]) === hour
-  //                 )
-  //                 .map(session => (
-  //                   <div
-  //                     key={session.id}
-  //                     className={`absolute left-1 right-1 p-2 text-xs cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-[1.02] ${
-  //                       isRegistered(session.id)
-  //                         ? "bg-gradient-to-br from-green-50 to-green-100 border-green-300 shadow-sm"
-  //                         : "bg-gradient-to-br from-stone-50 to-stone-100 border-stone-300 shadow-sm"
-  //                     } border rounded-lg backdrop-blur-sm`}
-  //                     style={
-  //                       {
-  //                         // top: `${(parseInt(session.startTime.split(":")[1]) / 60) * 100}%`,
-  //                         // height: `${((parseInt(session.endTime.split(":")[0]) * 60 + parseInt(session.endTime.split(":")[1]) - (parseInt(session.startTime.split(":")[0]) * 60 + parseInt(session.startTime.split(":")[1]))) / 60) * 100}%`,
-  //                       }
-  //                     }
-  //                     onClick={e => handleSessionClick(session, e)}
-  //                   >
-  //                     <div className="font-semibold text-stone-800 truncate">
-  //                       {session.title}
-  //                     </div>
-  //                     <div className="text-stone-600 truncate text-xs">
-  //                       {session.coach}
-  //                     </div>
-  //                     {isRegistered(session.id) && (
-  //                       <div className="absolute top-1 right-1 w-2 h-2 bg-green-500 rounded-full"></div>
-  //                     )}
-  //                   </div>
-  //                 ))}
-  //             </div>
-  //           </div>
-  //         ))}
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
   return (
     <div
       className="min-h-screen bg-white"
@@ -678,14 +500,14 @@ export default function FlowFestPage() {
               THE MAP
             </button>
             <button
-              onClick={() => setSelectedView("partners")}
+              onClick={() => setSelectedView("sponsors")}
               className={`px-6 py-3 text-sm font-light tracking-[0.1em] transition-colors ${
-                selectedView === "partners"
+                selectedView === "sponsors"
                   ? "border-b-2 border-stone-800 text-stone-800"
                   : "text-stone-500 hover:text-stone-700"
               }`}
             >
-              OUR PARTNERS
+              OUR SPONSORS
             </button>
             <button
               onClick={() => setSelectedView("coaches")}
@@ -1311,84 +1133,11 @@ export default function FlowFestPage() {
         </section>
       )}
 
-      {/* Partners View */}
-      {selectedView === "partners" && (
-        <section className="py-16 px-8 bg-stone-50">
-          <div className="max-w-7xl mx-auto">
-            <h2
-              className="text-4xl md:text-5xl font-extralight text-stone-800 mb-12 text-center tracking-wide leading-tight"
-              style={{fontFamily: "TheSeasons-Light, serif"}}
-            >
-              Our Partners
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-              {sponsors.map((sponsor, index) => (
-                <div key={index} className="text-center">
-                  <div className="bg-white p-8 border border-stone-200 hover:shadow-lg transition-all duration-300 rounded-lg">
-                    <div className="w-20 h-20 bg-gradient-to-br from-stone-100 to-stone-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-                      <span className="text-stone-600 font-medium text-lg">
-                        {sponsor.name.split(" ")[0]}
-                      </span>
-                    </div>
-                    <h4 className="font-medium text-stone-800 mb-3 text-lg">
-                      {sponsor.name}
-                    </h4>
-                    <a
-                      href={sponsor.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-stone-800 transition-colors font-light"
-                    >
-                      Visit Website
-                      <ExternalLink className="w-4 h-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* Sponsors View */}
+      {selectedView === "sponsors" && <SponsorsDirectory />}
 
       {/* Coaches View (uses same layout/content for now) */}
-      {selectedView === "coaches" && (
-        <CoachesDirectory />
-        // <section className="py-16 px-8 bg-stone-50">
-        //   <div className="max-w-7xl mx-auto">
-        //     <h2
-        //       className="text-4xl md:text-5xl font-extralight text-stone-800 mb-12 text-center tracking-wide leading-tight"
-        //       style={{fontFamily: "TheSeasons-Light, serif"}}
-        //     >
-        //       Our Coaches
-        //     </h2>
-        //     <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-        //       {sponsors.map((sponsor, index) => (
-        //         <div key={index} className="text-center">
-        //           <div className="bg-white p-8 border border-stone-200 hover:shadow-lg transition-all duration-300 rounded-lg">
-        //             <div className="w-20 h-20 bg-gradient-to-br from-stone-100 to-stone-200 rounded-full mx-auto mb-6 flex items-center justify-center">
-        //               <span className="text-stone-600 font-medium text-lg">
-        //                 {sponsor.name.split(" ")[0]}
-        //               </span>
-        //             </div>
-        //             <h4 className="font-medium text-stone-800 mb-3 text-lg">
-        //               {sponsor.name}
-        //             </h4>
-        //             <a
-        //               href={sponsor.website}
-        //               target="_blank"
-        //               rel="noopener noreferrer"
-        //               className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-stone-800 transition-colors font-light"
-        //             >
-        //               Visit Website
-        //               <ExternalLink className="w-4 h-4" />
-        //             </a>
-        //           </div>
-        //         </div>
-        //       ))}
-        //     </div>
-        //   </div>
-        // </section>
-      )}
+      {selectedView === "coaches" && <CoachesDirectory />}
 
       {/* Sponsors Section removed; content moved into tabs */}
 

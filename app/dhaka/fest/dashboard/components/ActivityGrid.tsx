@@ -59,6 +59,14 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
     );
   };
 
+  const ActivityCard = ({
+    title,
+    duration,
+  }: {
+    title: string;
+    duration: number;
+  }) => {};
+
   return (
     // <div className="h-screen flex flex-col justify-center mt-48 max-w-screen overflow-scroll">
     <div className="bg-white rounded-lg shadow-lg border border-stone-200 overflow-x-visible mx-auto w-6xl overflow-y-hidden">
