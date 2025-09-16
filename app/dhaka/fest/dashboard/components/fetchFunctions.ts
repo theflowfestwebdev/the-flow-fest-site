@@ -1,5 +1,11 @@
 export type SheetRow = Record<string, string>;
 
+export const Days: any = {
+  1: "Thursday",
+  2: "Friday",
+  3: "Saturday",
+};
+
 export async function fetchData(url: string) {
   const res = await fetch(url);
   if (!res.ok) {
@@ -40,14 +46,17 @@ type SessionList = {
   sessions: Session[];
 };
 
-export async function fetchSessions(day: string) {
+export async function fetchSessions(day: number) {
   const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
-  const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Program%20Grid!B11:G20?key=${apiKey}`;
+  const range = day == 1 ? "B1:G10" : day == 2 ? "B11:G20" : "B21:G30";
+
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Program%20Grid!${range}?key=${apiKey}`;
 
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error("Failed to fetch sessions");
   }
+
   const data = await res.json();
   const [headers, ...rows] = data.values;
   // const [_, ...zones] = headers;
@@ -90,3 +99,5 @@ export async function fetchSessions(day: string) {
   console.log(schedule);
   return schedule;
 }
+
+fetchSessions(3).then(res => {});

@@ -1,13 +1,7 @@
 "use client";
 import "./ActivityGrid.css";
 import {ReactNode, useState, useEffect} from "react";
-import {fetchSessions} from "./fetchFunctions";
-
-export const Days: any = {
-  1: "Thursday",
-  2: "Friday",
-  3: "Saturday",
-};
+import {Days, fetchSessions} from "./fetchFunctions";
 
 export default function ZoneScheduleCarousel() {
   const [activeDay, setActiveDay] = useState(1);
@@ -55,7 +49,7 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
   const [data, setData] = useState<any>();
 
   useEffect(() => {
-    fetchSessions(Days[day]).then(res => {
+    fetchSessions(day).then(res => {
       setData(res);
       setLoading(false);
     });
