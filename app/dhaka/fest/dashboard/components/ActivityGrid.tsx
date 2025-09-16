@@ -1,7 +1,13 @@
 "use client";
 import "./ActivityGrid.css";
 import {ReactNode, useState, useEffect} from "react";
-import {Days, fetchSessions} from "./fetchFunctions";
+import {fetchSessions} from "./fetchFunctions";
+
+export const Days: any = {
+  1: "Thursday",
+  2: "Friday",
+  3: "Saturday",
+};
 
 export default function ZoneScheduleCarousel() {
   const [activeDay, setActiveDay] = useState(1);
@@ -33,11 +39,7 @@ export default function ZoneScheduleCarousel() {
         </button>
       </div>
       <div className="overflow-x-scroll grid gap-4 mx-auto mt-12">
-        {dayIndex.map(day => (
-          <div key={day} className={day === activeDay ? "block" : "hidden"}>
-            <ZoneActivityGrid day={day} />
-          </div>
-        ))}
+        <ZoneActivityGrid day={activeDay} />
       </div>{" "}
     </div>
   );
@@ -46,14 +48,7 @@ export default function ZoneScheduleCarousel() {
 const ZoneActivityGrid = ({day}: {day: number}) => {
   const minGridSize: number = 768;
   const [loading, setLoading] = useState<Boolean>(true);
-  const [data, setData] = useState<any>();
-
-  useEffect(() => {
-    fetchSessions(day).then(res => {
-      setData(res);
-      setLoading(false);
-    });
-  }, []);
+  const [data, setData] = useState(undefined);
 
   const Cell = ({children}: {children?: ReactNode}) => {
     return (
@@ -70,6 +65,11 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
     title: string;
     duration: number;
   }) => {};
+
+  useEffect(() => {
+    setLoading(false);
+    fetchSessions(day).then(res => setData(res));
+  }, [day]);
 
   return (
     // <div className="h-screen flex flex-col justify-center mt-48 max-w-screen overflow-scroll">
@@ -90,7 +90,14 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
         <span className="cell text-center">Amphitheatre</span>
         <span className="cell text-center">Med Garden</span>
       </div>
-      {!loading ? (
+      {loading ? (
+        <div className="max text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-800 mx-auto"></div>
+          <p className="mt-4 text-stone-600 font-light">
+            Loading Activities...
+          </p>
+        </div>
+      ) : (
         Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
           <div
             key={hour}
@@ -118,11 +125,6 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
             ))}
           </div>
         ))
-      ) : (
-        <div className="max text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-800 mx-auto"></div>
-          <p className="mt-4 text-stone-600 font-light">Loading Sessions...</p>
-        </div>
       )}
     </div>
   );

@@ -1,11 +1,5 @@
 export type SheetRow = Record<string, string>;
 
-export const Days: any = {
-  1: "Thursday",
-  2: "Friday",
-  3: "Saturday",
-};
-
 export async function fetchData(url: string) {
   const res = await fetch(url);
   if (!res.ok) {
@@ -46,6 +40,14 @@ type SessionList = {
   sessions: Session[];
 };
 
+export const Days: any = {
+  1: "Thursday",
+  2: "Friday",
+  3: "Saturday",
+};
+
+export const Times: any = ["9", "10", "11", "12", "1", "2", "3", "4", "5:30"];
+
 export async function fetchSessions(day: number) {
   const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
   const range = day == 1 ? "B1:G10" : day == 2 ? "B11:G20" : "B21:G30";
@@ -58,7 +60,6 @@ export async function fetchSessions(day: number) {
   }
 
   const data = await res.json();
-  const [headers, ...rows] = data.values;
   // const [_, ...zones] = headers;
 
   // let schedule: any = {};
@@ -83,21 +84,50 @@ export async function fetchSessions(day: number) {
 
   // return schedule;
 
-  let schedule: any = {};
+  type sessionRow = {
+    time: string;
+    sessions?: {
+      name: string;
+      zone: string;
+      coach?: string;
+    };
+  };
 
+  let schedule: any = [];
+
+  const [headers, ...rows] = data.values;
   const [_, ...zones] = headers;
+  let times: string[] = [];
 
-  rows.forEach((x: string[]) => {
-    schedule[`${x[0]}`] = x
+  // rows.forEach((x: string[]) => {
+  //   schedule[`${x[0]}`] = x
+  //     .slice(1)
+  //     .reduce((obj: any, sessionName: string, index: number) => {
+  //       obj[`${zones[index]}`] = {name: sessionName};
+  //       return obj;
+  //     }, {});
+  //   times.push(x[0]);
+  // });
+
+  schedule = rows.map((row: any, i: number) => {
+    const result: sessionRow = row
       .slice(1)
-      .reduce((obj: any, sessionName: string, index: number) => {
-        obj[`${zones[index]}`] = {name: sessionName};
-
+      .map((activityName: string, j: number) => {
+        const obj = {name: activityName, zone: zones[j]};
         return obj;
-      }, {});
+      });
+    result.time = row[0];
+    return result;
   });
+
   console.log(schedule);
-  return schedule;
+  // console.log(times);
+  return zones;
 }
 
-fetchSessions(3).then(res => {});
+const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
+const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!A17:V157?key=${apiKey}`;
+
+fetchSessions(1).then(res => {
+  // console.log(res);
+});
