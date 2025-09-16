@@ -110,13 +110,11 @@ export async function fetchSessions(day: number) {
   // });
 
   schedule = rows.map((row: any, i: number) => {
-    const result: sessionRow = row
-      .slice(1)
-      .map((activityName: string, j: number) => {
-        const obj = {name: activityName, zone: zones[j]};
-        return {sessions: obj};
-      });
-    result.time = row[0];
+    const result: sessionRow = {time: row[0]};
+    result.sessions = row.slice(1).map((activityName: string, j: number) => {
+      const obj = {name: activityName, zone: zones[j]};
+      return obj;
+    });
     return result;
   });
 

@@ -38,7 +38,7 @@ export default function ZoneScheduleCarousel() {
           →
         </button>
       </div>
-      <div className="overflow-x-scroll grid gap-4 mx-auto mt-12">
+      <div className="overflow-x-scroll lg:overflow-x-hidden grid gap-4 mx-auto mt-12">
         <ZoneActivityGrid day={activeDay} />
       </div>{" "}
     </div>
@@ -123,14 +123,13 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
               </div>
             </div>
             {/* Hourly activities */}
-            {/* {Array.from({length: 5}, (_, i) => i + 10).map((zone, column) => ( */}
-            {sessionRow ? (
-              sessionRow.map((activity: any, column: any) => (
-                <Cell key={column}>{activity.name}</Cell>
-              ))
-            ) : (
-              <Cell></Cell>
-            )}
+            {sessionRow.sessions.length > 0
+              ? sessionRow.sessions.map((activity: any, column: any) => (
+                  <Cell key={column}>{activity.name}</Cell>
+                ))
+              : Array.from({length: 5}, (_: any, i: number) => i + 10).map(
+                  (__: any, key: number) => <Cell key={key}></Cell>
+                )}
           </div>
         ))
       )}
