@@ -2,7 +2,7 @@
 import "./ActivityGrid.css";
 import {ReactNode, useState} from "react";
 
-const Days: any = {
+export const Days: any = {
   1: "Thursday",
   2: "Friday",
   3: "Saturday",
