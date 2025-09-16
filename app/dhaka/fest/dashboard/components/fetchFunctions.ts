@@ -114,20 +114,20 @@ export async function fetchSessions(day: number) {
       .slice(1)
       .map((activityName: string, j: number) => {
         const obj = {name: activityName, zone: zones[j]};
-        return obj;
+        return {sessions: obj};
       });
     result.time = row[0];
     return result;
   });
 
-  console.log(schedule);
+  // console.log(schedule);
   // console.log(times);
-  return zones;
+  return schedule;
 }
 
 const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
 const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!A17:V157?key=${apiKey}`;
 
 fetchSessions(1).then(res => {
-  // console.log(res);
+  console.log(res);
 });

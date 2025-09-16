@@ -48,7 +48,7 @@ export default function ZoneScheduleCarousel() {
 const ZoneActivityGrid = ({day}: {day: number}) => {
   const minGridSize: number = 768;
   const [loading, setLoading] = useState<Boolean>(true);
-  const [data, setData] = useState(undefined);
+  const [data, setData] = useState([]);
 
   const Cell = ({children}: {children?: ReactNode}) => {
     return (
@@ -68,7 +68,11 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
 
   useEffect(() => {
     setLoading(false);
-    fetchSessions(day).then(res => setData(res));
+    fetchSessions(day).then(res => {
+      setData(res);
+      setLoading(false);
+    });
+    return setLoading(true);
   }, [day]);
 
   return (
@@ -98,9 +102,10 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
           </p>
         </div>
       ) : (
-        Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
+        // Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
+        data.map((sessionRow: any, row: number) => (
           <div
-            key={hour}
+            key={row}
             className="grid grid-cols-6 border-separate"
             style={{minWidth: `${minGridSize}px`, borderSpacing: "2px"}}
           >
@@ -111,18 +116,21 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
               }`}
             >
               <div className="text-center">
-                <div className="text-sm font-light">
-                  {hour === 12 ? "12" : hour > 12 ? `${hour - 12}` : `${hour}`}
-                </div>
+                <div className="text-sm font-light">{sessionRow.time}</div>
                 <div className="text-xs text-stone-500 font-light">
-                  {hour >= 12 ? "PM" : "AM"}
+                  {sessionRow.time > 8 ? "AM" : "PM"}
                 </div>
               </div>
             </div>
             {/* Hourly activities */}
-            {Array.from({length: 5}, (_, i) => i + 10).map((zone, column) => (
-              <Cell key={column}>{/* {`${column}, ${row}`} */}</Cell>
-            ))}
+            {/* {Array.from({length: 5}, (_, i) => i + 10).map((zone, column) => ( */}
+            {sessionRow ? (
+              sessionRow.map((activity: any, column: any) => (
+                <Cell key={column}>{activity.name}</Cell>
+              ))
+            ) : (
+              <Cell></Cell>
+            )}
           </div>
         ))
       )}
