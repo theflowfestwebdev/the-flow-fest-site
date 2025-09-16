@@ -1,8 +1,6 @@
 import {useState, useEffect} from "react";
-import Link from "next/link";
-import {ExternalLink} from "lucide-react";
 
-import {SheetRow, fetchVendorData} from "./fetchFunctions";
+import {SheetRow, fetchData} from "./fetchFunctions";
 
 const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
 const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!B1:B15?key=${apiKey}`;
@@ -12,7 +10,7 @@ export default function SponsorsDirectory() {
   const [loading, setLoading] = useState<Boolean>(true);
 
   useEffect(() => {
-    fetchVendorData(url)
+    fetchData(url)
       .then(fetchedData => {
         setData(fetchedData);
         setLoading(false);
