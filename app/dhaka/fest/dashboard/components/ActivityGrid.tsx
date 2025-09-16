@@ -1,6 +1,7 @@
 "use client";
 import "./ActivityGrid.css";
-import {ReactNode, useState} from "react";
+import {ReactNode, useState, useEffect} from "react";
+import {fetchSessions} from "./fetchFunctions";
 
 export const Days: any = {
   1: "Thursday",
@@ -50,6 +51,15 @@ export default function ZoneScheduleCarousel() {
 
 const ZoneActivityGrid = ({day}: {day: number}) => {
   const minGridSize: number = 768;
+  const [loading, setLoading] = useState<Boolean>(true);
+  const [data, setData] = useState<any>();
+
+  useEffect(() => {
+    fetchSessions(Days[day]).then(res => {
+      setData(res);
+      setLoading(false);
+    });
+  }, []);
 
   const Cell = ({children}: {children?: ReactNode}) => {
     return (
@@ -86,33 +96,40 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
         <span className="cell text-center">Amphitheatre</span>
         <span className="cell text-center">Med Garden</span>
       </div>
-      {Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
-        <div
-          key={hour}
-          className="grid grid-cols-6 border-separate"
-          style={{minWidth: `${minGridSize}px`, borderSpacing: "2px"}}
-        >
-          {/* Time Label */}
+      {!loading ? (
+        Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
           <div
-            className={`flex items-center justify-center text-[10px] sm:text-xs font-medium text-stone-700 border border-stone-200 shadow-sm ${
-              row % 2 === 0 ? "bg-stone-50" : "bg-white"
-            }`}
+            key={hour}
+            className="grid grid-cols-6 border-separate"
+            style={{minWidth: `${minGridSize}px`, borderSpacing: "2px"}}
           >
-            <div className="text-center">
-              <div className="text-sm font-light">
-                {hour === 12 ? "12" : hour > 12 ? `${hour - 12}` : `${hour}`}
-              </div>
-              <div className="text-xs text-stone-500 font-light">
-                {hour >= 12 ? "PM" : "AM"}
+            {/* Time Label */}
+            <div
+              className={`flex items-center justify-center text-[10px] sm:text-xs font-medium text-stone-700 border border-stone-200 shadow-sm ${
+                row % 2 === 0 ? "bg-stone-50" : "bg-white"
+              }`}
+            >
+              <div className="text-center">
+                <div className="text-sm font-light">
+                  {hour === 12 ? "12" : hour > 12 ? `${hour - 12}` : `${hour}`}
+                </div>
+                <div className="text-xs text-stone-500 font-light">
+                  {hour >= 12 ? "PM" : "AM"}
+                </div>
               </div>
             </div>
+            {/* Hourly activities */}
+            {Array.from({length: 5}, (_, i) => i + 10).map((zone, column) => (
+              <Cell key={column}>{/* {`${column}, ${row}`} */}</Cell>
+            ))}
           </div>
-          {/* Hourly activities */}
-          {Array.from({length: 5}, (_, i) => i + 10).map((zone, column) => (
-            <Cell key={column}>{/* {`${column}, ${row}`} */}</Cell>
-          ))}
+        ))
+      ) : (
+        <div className="max text-center py-12">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-800 mx-auto"></div>
+          <p className="mt-4 text-stone-600 font-light">Loading Sessions...</p>
         </div>
-      ))}
+      )}
     </div>
   );
 };

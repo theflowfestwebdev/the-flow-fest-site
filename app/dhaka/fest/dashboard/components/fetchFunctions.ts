@@ -40,7 +40,10 @@ type SessionList = {
   sessions: Session[];
 };
 
-export async function fetchSessions(url: string) {
+export async function fetchSessions(day: string) {
+  const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
+  const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Program%20Grid!B11:G20?key=${apiKey}`;
+
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error("Failed to fetch sessions");
@@ -87,8 +90,3 @@ export async function fetchSessions(url: string) {
   console.log(schedule);
   return schedule;
 }
-
-const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
-const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Program%20Grid!B11:G20?key=${apiKey}`;
-
-fetchSessions(url).then(schedule => {});
