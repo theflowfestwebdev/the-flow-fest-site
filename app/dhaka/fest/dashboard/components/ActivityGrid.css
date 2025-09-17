@@ -9,7 +9,7 @@
 }
 
 .cell {
-  @apply text-center relative z-20  min-h-20 p-4 text-sm min-w-32;
+  @apply text-center relative z-20  min-h-20 p-1 text-sm min-w-32;
 }
 
 h3 {

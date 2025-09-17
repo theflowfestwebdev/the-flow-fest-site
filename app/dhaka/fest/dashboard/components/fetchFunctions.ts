@@ -35,8 +35,8 @@ type Session = {
   zone?: string;
 };
 
-type SessionList = {
-  time?: "string";
+export type SessionRow = {
+  time: string;
   sessions: Session[];
 };
 
@@ -46,7 +46,24 @@ export const Days: any = {
   3: "Saturday",
 };
 
-export const Times: any = ["9", "10", "11", "12", "1", "2", "3", "4", "5:30"];
+export const Times: string[] = [
+  "9",
+  "10",
+  "11",
+  "12",
+  "1",
+  "2",
+  "3",
+  "4",
+  "5:30",
+];
+export const Zones: string[] = [
+  "Yoga Shala",
+  "Kids Playground",
+  "Art + Soul",
+  "Amphitheatre",
+  "Med Garden",
+];
 
 export async function fetchSessions(day: number) {
   const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
@@ -84,15 +101,6 @@ export async function fetchSessions(day: number) {
 
   // return schedule;
 
-  type sessionRow = {
-    time: string;
-    sessions?: {
-      name: string;
-      zone: string;
-      coach?: string;
-    };
-  };
-
   let schedule: any = [];
 
   const [headers, ...rows] = data.values;
@@ -110,22 +118,26 @@ export async function fetchSessions(day: number) {
   // });
 
   schedule = rows.map((row: any, i: number) => {
-    const result: sessionRow = {time: row[0]};
-    result.sessions = row.slice(1).map((activityName: string, j: number) => {
-      const obj = {name: activityName, zone: zones[j]};
-      return obj;
-    });
+    const result: SessionRow = {
+      time: row[0],
+      sessions: row.slice(1).map((activityName: string, j: number) => {
+        const obj = {name: activityName, time: row[0], zone: zones[j]};
+        return obj;
+      }),
+    };
+    times.push(row[0]);
+
     return result;
   });
 
   // console.log(schedule);
   // console.log(times);
-  return schedule;
+  return {schedule, times, zones};
 }
 
 const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
 const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!A17:V157?key=${apiKey}`;
 
 fetchSessions(1).then(res => {
-  console.log(res);
+  // console.log(res.zones);
 });

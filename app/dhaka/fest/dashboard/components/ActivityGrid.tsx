@@ -1,13 +1,13 @@
 "use client";
 import "./ActivityGrid.css";
 import {ReactNode, useState, useEffect} from "react";
-import {fetchSessions} from "./fetchFunctions";
+import {fetchSessions, SessionRow} from "./fetchFunctions";
 
-export const Days: any = {
-  1: "Thursday",
-  2: "Friday",
-  3: "Saturday",
-};
+import {Days, Times, Zones} from "./fetchFunctions";
+import {CheckIcon} from "lucide-react";
+
+const times = Times;
+const zones = Zones;
 
 export default function ZoneScheduleCarousel() {
   const [activeDay, setActiveDay] = useState(1);
@@ -47,29 +47,52 @@ export default function ZoneScheduleCarousel() {
 
 const ZoneActivityGrid = ({day}: {day: number}) => {
   const minGridSize: number = 768;
-  const [loading, setLoading] = useState<Boolean>(true);
-  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [schedule, setSchedule] = useState<SessionRow[]>([]);
+  // const [times, setTimes] = useState<string[]>([]);
+  // const [zones, setZones] = useState<string[]>([]);
 
-  const Cell = ({children}: {children?: ReactNode}) => {
+  const Cell = ({title}: {title: string}) => {
     return (
       <div className="border border-stone-200/10 shadow-sm flex items-center justify-center cell">
-        {children}
+        {title == "" ? <></> : <ActivityCard title={title} />}
       </div>
     );
   };
 
-  const ActivityCard = ({
-    title,
-    duration,
-  }: {
-    title: string;
-    duration: number;
-  }) => {};
+  const ActivityCard = ({title}: {title: string}) => {
+    const [selected, setSelected] = useState<Boolean>(false);
+
+    return (
+      <button
+        onClick={() => setSelected(!selected)}
+        className={`${!selected ? "bg-primary/10 hover:bg-primary/15" : "bg-green-300/20 hover:bg-green-300/25 border-green-200/30"} 
+          transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:cursor-pointer 
+          h-full w-full flex flex-col items-center text-center justify-center
+          rounded-md border-2 shadow-md p-4 gap-2`}
+      >
+        <span
+          className={`${selected ? "text-green-500 opacity-50 relative" : "opacity-20"} transition-all duration-300 `}
+        >
+          <CheckIcon size={20} />
+        </span>
+        <span className="opacity-80">{title}</span>
+      </button>
+    );
+  };
 
   useEffect(() => {
     setLoading(false);
     fetchSessions(day).then(res => {
-      setData(res);
+      setSchedule(res.schedule);
+
+      // setZones(res.zones);
+      // setTimes(res.times);
+
+      // const times = res.times;
+      // const zones = res.zones;
+
+      console.log(times);
       setLoading(false);
     });
     return setLoading(true);
@@ -86,13 +109,18 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
         <span className="cell text-center">
           Day {day} <br /> {Days[day]}
         </span>
-        <span className="cell text-center">Yoga Shala</span>
-        <span className="cell text-center">
-          Kids <br /> Playground
-        </span>
+        {zones.map(
+          (zone: string, index: number): ReactNode => (
+            <span key={index} className="cell text-center">
+              {zone}
+            </span>
+          )
+        )}
+        {/* <span className="cell text-center">Yoga Shala</span>
+        <span className="cell text-center">Kids Playground</span>
         <span className="cell text-center">Art + Soul</span>
         <span className="cell text-center">Amphitheatre</span>
-        <span className="cell text-center">Med Garden</span>
+        <span className="cell text-center">Med Garden</span> */}
       </div>
       {loading ? (
         <div className="max text-center py-12">
@@ -103,7 +131,7 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
         </div>
       ) : (
         // Array.from({length: 10}, (_, i) => i + 10).map((hour, row) => (
-        data.map((sessionRow: any, row: number) => (
+        schedule.map((sessionRow: any, row: number) => (
           <div
             key={row}
             className="grid grid-cols-6 border-separate"
@@ -123,13 +151,21 @@ const ZoneActivityGrid = ({day}: {day: number}) => {
               </div>
             </div>
             {/* Hourly activities */}
-            {sessionRow.sessions.length > 0
-              ? sessionRow.sessions.map((activity: any, column: any) => (
-                  <Cell key={column}>{activity.name}</Cell>
+            {/* {sessionRow.sessions.length > 0
+              ? sessionRow.sessions.map((activity: any, column: number) => (
+                  <Cell key={column}>
+                    {schedule[row].sessions[column].name}
+                  </Cell>
                 ))
               : Array.from({length: 5}, (_: any, i: number) => i + 10).map(
                   (__: any, key: number) => <Cell key={key}></Cell>
-                )}
+                )} */}
+            {zones.map((zone: any, column: number) => (
+              <Cell
+                key={column}
+                title={schedule[row].sessions[column]?.name || ""}
+              />
+            ))}
           </div>
         ))
       )}
