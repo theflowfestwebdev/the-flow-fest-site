@@ -1,54 +1,18 @@
 import {useState, useEffect} from "react";
 import Link from "next/link";
+
 import {ExternalLink} from "lucide-react";
+import {SheetRow, fetchData} from "./fetchFunctions";
 
-const sheetId: string = "1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs";
-const sheetName: string = "Program%20Coaches";
-const apiKey: string = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
-const coachUrl: string = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!A1:K40?key=${apiKey}`;
+const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
+const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!A17:V157?key=${apiKey}`;
 
-type SheetRow = Record<string, string>;
-
-async function fetchGoogleSheet(endpoint: string): Promise<SheetRow[]> {
-  const res = await fetch(endpoint);
-  if (!res.ok) {
-    throw new Error(`Failed to fetch sheet: ${res.status} ${res.statusText}`);
-  }
-
-  const data = await res.json();
-
-  if (!data.values || data.values.length === 0) {
-    return [];
-  }
-
-  const [headers, ...rows] = data.values;
-
-  // Map each row to an object with header keys
-  const result: SheetRow[] = rows.map((row: string[]) => {
-    const obj: SheetRow = {};
-    headers.forEach((header: string, i: number) => {
-      obj[header] = row[i] ?? ""; // Fill missing cells with empty string
-    });
-    // console.log(data);
-    return obj;
-  });
-  result.forEach((row, index) => {
-    if (row.id == "id" || row.coach == "") {
-      result.splice(index, 1);
-    } else {
-      console.log(`${row.coach}`);
-    }
-  });
-
-  return result;
-}
-
-export default function CoachesDirectory() {
+export default function VendorsDirectory() {
   const [data, setData] = useState<SheetRow[]>([]);
   const [loading, setLoading] = useState<Boolean>(true);
 
   useEffect(() => {
-    fetchGoogleSheet(coachUrl)
+    fetchData(url)
       .then(fetchedData => {
         setData(fetchedData);
         setLoading(false);
@@ -63,40 +27,40 @@ export default function CoachesDirectory() {
           className="text-4xl md:text-5xl font-extralight text-stone-800 mb-12 text-center tracking-wide leading-tight"
           style={{fontFamily: "TheSeasons-Light, serif"}}
         >
-          Our Coaches
+          Our Vendors
         </h2>
         {!loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {data.map((sponsor, index) => (
+            {data.map((vendor: any, index: number) => (
               <div key={index} className="text-center">
                 <div className="bg-white p-8 border border-stone-200 hover:shadow-lg transition-all duration-300 rounded-lg">
                   <div className="w-20 h-20 bg-gradient-to-br from-stone-100 to-stone-200 rounded-full mx-auto mb-6 flex items-center justify-center">
                     <span className="text-stone-600 font-medium text-lg">
-                      {sponsor.coach
-                        ? sponsor.coach.split(" ")[0]
+                      {vendor.name
+                        ? vendor.name.split(" ")[0]
                         : "Loading info..."}
                     </span>
                   </div>
                   <h4 className="font-medium text-stone-800 mb-3 text-lg">
-                    {sponsor.coach}
+                    {vendor.name}
                   </h4>
                   <Link
                     href={
-                      sponsor.insta
-                        ? `https://${sponsor.insta}`
-                        : sponsor.fb
-                          ? `https://${sponsor.fb}`
+                      vendor.Instagram
+                        ? vendor.Instagram
+                        : vendor.FB
+                          ? `{vendor.FB}`
                           : "#"
                     }
                     target="_blank"
                     className="inline-flex items-center gap-2 text-sm text-stone-600 hover:text-stone-800 transition-colors font-light"
                   >
-                    {sponsor.insta ? (
+                    {vendor.Instagram ? (
                       <>
                         View Instagram
                         <ExternalLink className="w-4 h-4" />
                       </>
-                    ) : sponsor.fb ? (
+                    ) : vendor.FB ? (
                       <>
                         View Facebook
                         <ExternalLink className="w-4 h-4" />
@@ -112,9 +76,7 @@ export default function CoachesDirectory() {
         ) : (
           <div className="max text-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-800 mx-auto"></div>
-            <p className="mt-4 text-stone-600 font-light">
-              Loading Sponsors...
-            </p>
+            <p className="mt-4 text-stone-600 font-light">Loading Vendors...</p>
           </div>
         )}
       </div>

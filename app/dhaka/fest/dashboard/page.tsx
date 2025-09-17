@@ -19,6 +19,7 @@ import StolzlThinButton from "@/components/ui/StolzlThinButton";
 import ZoneScheduleCarousel from "./components/ActivityGrid";
 import CoachesDirectory from "./components/CoachesDirectory";
 import SponsorsDirectory from "./components/SponsorsDirectory";
+import VendorsDirectory from "./components/VendorsDirectory";
 
 const festivalData = {
   title: "The Flow Fest 2025",
@@ -306,9 +307,9 @@ const sponsors = [
 
 export default function FlowFestPage() {
   const [selectedView, setSelectedView] = useState<
-    "schedule" | "map" | "sponsors" | "coaches"
+    "schedule" | "map" | "vendors" | "sponsors" | "coaches"
   >("schedule");
-  const [scheduleView, setScheduleView] = useState<"list" | "grid">("list");
+  const [scheduleView, setScheduleView] = useState<"list" | "grid">("grid");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [expandedSession, setExpandedSession] = useState<number | null>(null);
   const [showVendorDirectory, setShowVendorDirectory] = useState(true);
@@ -487,9 +488,9 @@ export default function FlowFestPage() {
                   : "text-stone-500 hover:text-stone-700"
               }`}
             >
-              THE GRID
+              PROGRAM GRID
             </button>
-            <button
+            {/* <button
               onClick={() => setSelectedView("map")}
               className={`px-6 py-3 text-sm font-light tracking-[0.1em] transition-colors ${
                 selectedView === "map"
@@ -498,6 +499,16 @@ export default function FlowFestPage() {
               }`}
             >
               THE MAP
+            </button> */}
+            <button
+              onClick={() => setSelectedView("vendors")}
+              className={`px-6 py-3 text-sm font-light tracking-[0.1em] transition-colors ${
+                selectedView === "vendors"
+                  ? "border-b-2 border-stone-800 text-stone-800"
+                  : "text-stone-500 hover:text-stone-700"
+              }`}
+            >
+              OUR VENDORS
             </button>
             <button
               onClick={() => setSelectedView("sponsors")}
@@ -525,14 +536,14 @@ export default function FlowFestPage() {
 
       {/* Schedule View */}
       {selectedView === "schedule" && (
-        <section className="py-16 px-2 md:px-8">
+        <section className=" px-2 md:px-8">
           <div className="max-w-7xl mx-auto" id="grid">
-            <h2
+            {/* <h2
               className="text-4xl md:text-5xl font-extralight text-stone-800 mb-12 tracking-wide leading-tight"
               style={{fontFamily: "TheSeasons-Light, serif"}}
             >
-              The Grid
-            </h2>
+              Program grid
+            </h2> */}
             {/* Filters */}
             <div className="flex flex-col lg:flex-row gap-6 mb-12">
               {/* <div className="flex flex-wrap gap-4">
@@ -551,17 +562,7 @@ export default function FlowFestPage() {
                 </select>
               </div> */}
               <div className="flex gap-2">
-                <button
-                  onClick={() => setScheduleView("list")}
-                  className={`p-2 transition-colors ${
-                    scheduleView === "list"
-                      ? "bg-stone-800 text-white"
-                      : "bg-stone-100 text-stone-600"
-                  }`}
-                >
-                  <List className="w-4 h-4" />
-                </button>
-                <button
+                {/* <button
                   onClick={() => setScheduleView("grid")}
                   className={`p-2 transition-colors ${
                     scheduleView === "grid"
@@ -570,7 +571,17 @@ export default function FlowFestPage() {
                   }`}
                 >
                   <Grid className="w-4 h-4" />
-                </button>
+                </button> */}
+                {/* <button
+                  onClick={() => setScheduleView("list")}
+                  className={`p-2 transition-colors ${
+                    scheduleView === "list"
+                      ? "bg-stone-800 text-white"
+                      : "bg-stone-100 text-stone-600"
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button> */}
               </div>
             </div>
 
@@ -1132,6 +1143,9 @@ export default function FlowFestPage() {
           </div>
         </section>
       )}
+
+      {/* Vendors View */}
+      {selectedView === "vendors" && <VendorsDirectory />}
 
       {/* Sponsors View */}
       {selectedView === "sponsors" && <SponsorsDirectory />}
