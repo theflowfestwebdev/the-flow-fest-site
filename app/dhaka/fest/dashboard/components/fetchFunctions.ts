@@ -135,9 +135,60 @@ export async function fetchSessions(day: number) {
   return {schedule, times, zones};
 }
 
-const apiKey = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
-const url = `https://sheets.googleapis.com/v4/spreadsheets/1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs/values/Vendors in zones!A17:V157?key=${apiKey}`;
+const sheetId: string = "1_cu4-cl2ZKxWEgh3KfxHJ6DCedUTkSpQW3g7yIUJEzs";
+const sheetName: string = "Program%20Coaches";
+const apiKey: string = "AIzaSyCbkrRaC3NvZK9ouLqL4Kc9gcUlU3SGhtg";
+const coachUrl: string = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}!A1:N46?key=${apiKey}`;
 
-fetchSessions(1).then(res => {
-  // console.log(res.zones);
+function convertDriveUrl(shareUrl: string) {
+  const regex = /\/file\/d\/([^/]+)\//;
+  const match = shareUrl.match(regex);
+
+  if (!match || !match[1]) {
+    throw new Error("Invalid Google Drive share URL");
+  }
+
+  const fileId = match[1];
+  return `https://drive.google.com/uc?export=view&id=${fileId}`;
+}
+
+export async function fetchCoachData(endpoint: string) {
+  const res = await fetch(endpoint);
+  if (!res.ok) {
+    throw new Error(`Failed to fetch sheet: ${res.status} ${res.statusText}`);
+  }
+
+  const data = await res.json();
+
+  if (!data.values || data.values.length === 0) {
+    return [];
+  }
+
+  const [headers, ...rows] = data.values;
+  // console.log(headers);
+
+  // Map each row to an object with header keys
+  const result: SheetRow[] = rows.map((row: string[]) => {
+    const obj: SheetRow = {};
+    headers.forEach((header: string, i: number) => {
+      if (header == "image" && row[i] != undefined) {
+        obj[header] = convertDriveUrl(row[i]);
+      } else {
+        obj[header] = row[i] ?? ""; // Fill missing cells with empty string
+      }
+    });
+    // console.log(data);
+    return obj;
+  });
+
+  return result.filter(
+    row =>
+      row.id !== "id" &&
+      row.coach !== "" &&
+      row.confirmed?.toLowerCase() == "yes"
+  );
+}
+
+fetchCoachData(coachUrl).then(res => {
+  console.log(res);
 });
